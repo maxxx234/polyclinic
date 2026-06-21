@@ -1,0 +1,29 @@
+# Render Blueprint — deploys the backend API with one click.
+# In Render: New + -> Blueprint -> connect this repo. Render reads this file and
+# only prompts you for the secret values (marked sync:false).
+services:
+  - type: web
+    name: polyclinic-api
+    runtime: node
+    rootDir: backend
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: MONGODB_URI
+        sync: false # paste your Atlas connection string
+      - key: JWT_SECRET
+        generateValue: true # Render generates a strong secret automatically
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      - key: LLM_ENDPOINT
+        value: https://menu.soyagora.com/api/v4/llm/stream
+      - key: LLM_TOKEN
+        sync: false # paste your LLM token
+      - key: SEED_ADMIN_EMAIL
+        sync: false # your admin email
+      - key: SEED_ADMIN_PASSWORD
+        sync: false # a strong admin password
+      - key: CLIENT_ORIGIN
+        sync: false # your Vercel frontend URL (add after frontend deploys)
